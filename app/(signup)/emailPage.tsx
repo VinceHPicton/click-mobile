@@ -13,31 +13,27 @@ import ThemedSafeableView from "../../components/ThemedSafeableView";
 import ThemedButton from "../../components/ThemedButton";
 import { useUser } from "../../hooks/useUser";
 import ThemedTextInput from "../../components/ThemedTextInput";
-import { useRouter } from "expo-router";
 
 const PhoneNumberPage = () => {
-  const router = useRouter();
   const handleSubmit = () => {
-    console.log("phone form submitted: ", phoneNumber);
-    setphoneNumber("");
-    router.navigate("/emailPage");
+    console.log("phone form submitted: ", email);
+    setEmail("");
   };
 
-  const [phoneNumber, setphoneNumber] = useState("");
+  const [email, setEmail] = useState("");
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <ThemedSafeableView>
         <ThemedTextInput
-          placeholder="Enter your phone number"
+          placeholder="Enter your email"
           style={{ width: "80%", marginBottom: 20 }}
-          value={phoneNumber}
-          keyboardType="number-pad"
-          onChangeText={setphoneNumber}
+          value={email}
+          keyboardType="email-address"
+          onChangeText={setEmail}
         />
-        {/* <Spacer height="20%" style={{ flexShrink: 3 }} /> */}
 
-        <ThemedButton onPress={handleSubmit}>Next</ThemedButton>
+        <ThemedButton onPress={handleSubmit}>Submit</ThemedButton>
       </ThemedSafeableView>
     </TouchableWithoutFeedback>
   );
