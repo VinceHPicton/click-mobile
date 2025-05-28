@@ -8,7 +8,6 @@ import { UserProvider } from "../contexts/UserContext";
 const RootLayout = () => {
   return (
     <UserProvider>
-      {/* StatusBar styles the time and battery icons etc at the top, auto is the default anyway */}
       <StatusBar style="auto"></StatusBar>
       <Stack
         screenOptions={{

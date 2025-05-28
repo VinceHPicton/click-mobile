@@ -1,19 +1,9 @@
-import {
-  Keyboard,
-  Pressable,
-  StyleSheet,
-  Text,
-  TouchableWithoutFeedback,
-  View,
-} from "react-native";
+import { Keyboard, StyleSheet, TouchableWithoutFeedback } from "react-native";
 import React, { useState } from "react";
-import { Colors } from "../../constants/Colors";
-import Spacer from "../../components/Spacer";
-import ThemedSafeableView from "../../components/ThemedSafeableView";
 import ThemedButton from "../../components/ThemedButton";
-import { useUser } from "../../hooks/useUser";
 import ThemedTextInput from "../../components/ThemedTextInput";
 import { useRouter } from "expo-router";
+import ThemedSafeView from "../../components/ThemedSafeView";
 
 const PhoneNumberPage = () => {
   const router = useRouter();
@@ -27,7 +17,7 @@ const PhoneNumberPage = () => {
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <ThemedSafeableView>
+      <ThemedSafeView>
         <ThemedTextInput
           placeholder="Enter your phone number"
           style={{ width: "80%", marginBottom: 20 }}
@@ -38,7 +28,7 @@ const PhoneNumberPage = () => {
         {/* <Spacer height="20%" style={{ flexShrink: 3 }} /> */}
 
         <ThemedButton onPress={handleSubmit}>Next</ThemedButton>
-      </ThemedSafeableView>
+      </ThemedSafeView>
     </TouchableWithoutFeedback>
   );
 };

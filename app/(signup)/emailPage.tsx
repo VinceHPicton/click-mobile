@@ -9,10 +9,10 @@ import {
 import React, { useState } from "react";
 import { Colors } from "../../constants/Colors";
 import Spacer from "../../components/Spacer";
-import ThemedSafeableView from "../../components/ThemedSafeableView";
 import ThemedButton from "../../components/ThemedButton";
 import { useUser } from "../../hooks/useUser";
 import ThemedTextInput from "../../components/ThemedTextInput";
+import ThemedSafeView from "../../components/ThemedSafeView";
 
 const PhoneNumberPage = () => {
   const handleSubmit = () => {
@@ -24,7 +24,7 @@ const PhoneNumberPage = () => {
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <ThemedSafeableView>
+      <ThemedSafeView>
         <ThemedTextInput
           placeholder="Enter your email"
           style={{ width: "80%", marginBottom: 20 }}
@@ -34,7 +34,7 @@ const PhoneNumberPage = () => {
         />
 
         <ThemedButton onPress={handleSubmit}>Submit</ThemedButton>
-      </ThemedSafeableView>
+      </ThemedSafeView>
     </TouchableWithoutFeedback>
   );
 };

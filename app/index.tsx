@@ -1,11 +1,11 @@
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text } from "react-native";
 import React from "react";
 import { Colors } from "../constants/Colors";
 import Spacer from "../components/Spacer";
-import ThemedSafeableView from "../components/ThemedSafeableView";
 import { useUser } from "../hooks/useUser";
 import ThemedButton from "../components/ThemedButton";
-import { Link, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
+import ThemedSafeView from "../components/ThemedSafeView";
 
 const Home = () => {
   const { user } = useUser();
@@ -18,10 +18,7 @@ const Home = () => {
   };
 
   return (
-    <ThemedSafeableView
-      safe={true}
-      style={[{ backgroundColor: Colors.welcomeBackground }]}
-    >
+    <ThemedSafeView style={[{ backgroundColor: Colors.welcomeBackground }]}>
       <Spacer></Spacer>
       <Text>Welcome to click!</Text>
 
@@ -30,7 +27,7 @@ const Home = () => {
       <ThemedButton onPress={handleClick}>
         Log in with phone number
       </ThemedButton>
-    </ThemedSafeableView>
+    </ThemedSafeView>
   );
 };
 
