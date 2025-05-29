@@ -4,13 +4,19 @@ import ThemedButton from "../../components/ThemedButton";
 import ThemedTextInput from "../../components/ThemedTextInput";
 import { useRouter } from "expo-router";
 import ThemedSafeView from "../../components/ThemedSafeView";
+import registerAttemptService, {
+  RegisterAttempt,
+} from "../../services/register-attempt-service";
+import useRegisterAttempt from "../../hooks/useRegisterAttempt";
 
 const PhoneNumberPage = () => {
   const router = useRouter();
-  const handleSubmit = () => {
-    console.log("phone form submitted: ", phoneNumber);
+  const { createRegisterAttempt } = useRegisterAttempt();
+
+  const handleSubmit = async () => {
+    const response = await createRegisterAttempt(phoneNumber);
+    console.log(response.data);
     setphoneNumber("");
-    router.navigate("/emailPage");
   };
 
   const [phoneNumber, setphoneNumber] = useState("");
