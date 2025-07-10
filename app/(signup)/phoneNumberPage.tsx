@@ -1,4 +1,9 @@
-import { Keyboard, StyleSheet, TouchableWithoutFeedback } from "react-native";
+import {
+  Keyboard,
+  StyleSheet,
+  TouchableWithoutFeedback,
+  Text,
+} from "react-native";
 import React, { useState } from "react";
 import ThemedButton from "../../components/ThemedButton";
 import ThemedTextInput from "../../components/ThemedTextInput";
@@ -8,15 +13,23 @@ import registerAttemptService, {
   RegisterAttempt,
 } from "../../services/register-attempt-service";
 import useRegisterAttempt from "../../hooks/useRegisterAttempt";
+import ThemedView from "../../components/ThemedView";
 
 const PhoneNumberPage = () => {
   const router = useRouter();
   const { createRegisterAttempt } = useRegisterAttempt();
 
+  const [errorShown, setErrorShown] = useState(false);
+
   const handleSubmit = async () => {
-    const response = await createRegisterAttempt(phoneNumber);
-    console.log(response.data);
-    setphoneNumber("");
+    try {
+      const response = await createRegisterAttempt(phoneNumber);
+      console.log(response.data.one_time_code);
+      router.navigate("/emailPage");
+    } catch (err) {
+      console.log("error shown now");
+      setErrorShown(true);
+    }
   };
 
   const [phoneNumber, setphoneNumber] = useState("");
@@ -34,6 +47,11 @@ const PhoneNumberPage = () => {
         {/* <Spacer height="20%" style={{ flexShrink: 3 }} /> */}
 
         <ThemedButton onPress={handleSubmit}>Next</ThemedButton>
+        {errorShown ? (
+          <ThemedView>
+            <Text>ERROR</Text>
+          </ThemedView>
+        ) : null}
       </ThemedSafeView>
     </TouchableWithoutFeedback>
   );
