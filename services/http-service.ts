@@ -33,10 +33,10 @@ export class HttpService {
   }
 
   update<T extends Entity>(entity: T) {
-    return apiClient.patch(this.route + "/" + entity.id);
+    return apiClient.patch(this.route + "/" + entity);
   }
 }
 
-const create = (route: string) => new HttpService(route);
+const createHttpService = (route: string) => new HttpService(route);
 
-export default create;
+export default createHttpService;
