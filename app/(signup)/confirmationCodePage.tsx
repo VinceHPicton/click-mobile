@@ -1,60 +1,50 @@
-import {
-  Keyboard,
-  StyleSheet,
-  TouchableWithoutFeedback,
-  Text,
-} from "react-native";
+import { Keyboard, TouchableWithoutFeedback, Text } from "react-native";
 import React, { useState } from "react";
 import ThemedButton from "../../components/ThemedButton";
 import ThemedTextInput from "../../components/ThemedTextInput";
-import { useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import ThemedSafeView from "../../components/ThemedSafeView";
 import useRegisterAttempt from "../../hooks/useRegisterAttempt";
 import ThemedView from "../../components/ThemedView";
-import { useUser } from "../../hooks/useUser";
 
-const PhoneNumberPage = () => {
+const ConfirmationCodePage = () => {
   const router = useRouter();
-  const { createRegisterAttempt } = useRegisterAttempt();
+  const { sendConfirmationCode } = useRegisterAttempt();
 
+  const [confirmationCode, setConfirmationCode] = useState("");
   const [error, setError] = useState<Error | null>(null);
-
-  const { user } = useUser();
 
   const handleSubmit = async () => {
     setError(null);
+
     try {
-      const response = await createRegisterAttempt(phoneNumber);
+      const response = await sendConfirmationCode(
+        confirmationCode.trim()
+      );
       console.log(response.data);
-      router.navigate({
-        pathname: "/confirmationCodePage",
-        params: { mobile: phoneNumber.trim() },
-      });
+      router.navigate("/emailPage");
     } catch (error: unknown) {
       if (error instanceof Error) {
         setError(error);
       } else {
         setError(new Error("Unknown error"));
       }
-      console.error("Unknown error from createRegisterAttempt:", error);
+      console.error("confirmationCode submit:", error);
     } finally {
-      setphoneNumber("")
+      setConfirmationCode("");
     }
   };
-
-  const [phoneNumber, setphoneNumber] = useState("");
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
       <ThemedSafeView>
         <ThemedTextInput
-          placeholder="Enter your phone number"
+          placeholder="Enter your 6 digit confirmation code"
           style={{ width: "80%", marginBottom: 20 }}
-          value={phoneNumber}
-          keyboardType="phone-pad"
-          onChangeText={setphoneNumber}
+          value={confirmationCode}
+          keyboardType="number-pad"
+          onChangeText={setConfirmationCode}
         />
-        {/* <Spacer height="20%" style={{ flexShrink: 3 }} /> */}
 
         <ThemedButton onPress={handleSubmit}>Next</ThemedButton>
         {error ? (
@@ -67,6 +57,7 @@ const PhoneNumberPage = () => {
   );
 };
 
-export default PhoneNumberPage;
+export default ConfirmationCodePage;
 
-const styles = StyleSheet.create({});
+// const styles = StyleSheet.create({});
+

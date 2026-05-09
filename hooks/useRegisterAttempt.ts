@@ -1,26 +1,22 @@
-import { useEffect, useState } from "react";
-import registerAttemptService, {
-  RegisterAttempt,
+import {
+  confirmRegisterAttempt,
+  postRegisterAttempt,
 } from "../services/register-attempt-service";
 import { produce } from "immer";
 
 const useRegisterAttempt = () => {
-  const createRegisterAttempt = async (mobile: string) => {
-    const newRegisterAttempt: RegisterAttempt = { mobile };
 
-    try {
-      const response = await registerAttemptService.create<RegisterAttempt>(
-        newRegisterAttempt
-      );
-      return response;
-    } catch (err) {
-      console.error(err);
-      throw err;
-    }
+  const createRegisterAttempt = async (mobile: string) => {
+    return await postRegisterAttempt(mobile);
+  };
+
+  const sendConfirmationCode = async (code: string) => {
+    return await confirmRegisterAttempt(code);
   };
 
   return {
     createRegisterAttempt,
+    sendConfirmationCode,
   };
 };
 
