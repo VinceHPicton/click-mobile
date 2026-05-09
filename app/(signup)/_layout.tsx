@@ -10,7 +10,7 @@ const SignupLayout = () => {
       <Stack
         screenOptions={{
           animation: "none",
-          // headerShown: false,
+          headerShown: false,
         }}
       />
     </>

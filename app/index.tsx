@@ -20,7 +20,7 @@ const Home = () => {
   return (
     <ThemedSafeView style={[{ backgroundColor: Colors.welcomeBackground }]}>
       <Spacer></Spacer>
-      <Text>Welcome to click!</Text>
+      <Text style={[styles.title, styles.container]}>Welcome to click!</Text>
 
       <Spacer height="50%" style={{ flexShrink: 3 }} />
 
@@ -38,4 +38,8 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
   },
+  title: {
+    fontWeight: 'bold',
+    fontSize: 18
+  }
 });

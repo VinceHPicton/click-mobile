@@ -16,7 +16,7 @@ import ThemedSafeView from "../../components/ThemedSafeView";
 
 const PhoneNumberPage = () => {
   const handleSubmit = () => {
-    console.log("phone form submitted: ", email);
+    console.log("email form submitted: ", email);
     setEmail("");
   };
 
