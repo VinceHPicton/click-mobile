@@ -9,7 +9,6 @@ export type UserContextType = {
   user: User | null;
   login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
-  register: (email: string, password: string) => Promise<void>;
 };
 
 export const UserContext = createContext<UserContextType | undefined>(
@@ -29,12 +28,8 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
     // TODO: implement logout logic
   };
 
-  const register = async (email: string, password: string) => {
-    // TODO: implement registration logic
-  };
-
   return (
-    <UserContext.Provider value={{ user, login, logout, register }}>
+    <UserContext.Provider value={{ user, login, logout }}>
       {children}
     </UserContext.Provider>
   );
