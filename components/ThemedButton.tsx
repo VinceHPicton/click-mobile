@@ -25,7 +25,14 @@ const ThemedButton: React.FC<ThemedButtonProps> = ({
   return (
     <Pressable
       {...props}
-      style={({ pressed }) => [styles.btn, pressed && styles.pressed]}
+      accessibilityRole="button"
+      accessibilityState={{ disabled: !!props.disabled }}
+      style={({ pressed }) => [
+        styles.btn,
+        pressed && styles.pressed,
+        props.disabled && styles.disabled,
+        style,
+      ]}
     >
       <Text style={{ color: Colors.text }}>{children}</Text>
     </Pressable>
@@ -42,5 +49,8 @@ const styles = StyleSheet.create({
   },
   pressed: {
     opacity: 0.8,
+  },
+  disabled: {
+    opacity: 0.5,
   },
 });

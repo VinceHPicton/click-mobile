@@ -1,15 +1,22 @@
 import React, { createContext, useState } from "react";
-import { postRegisterAttempt } from "../services/register-attempt-service";
+import {
+  AuthMode,
+  confirmAuthAttempt,
+  startAuthAttempt,
+} from "../services/auth-service";
+import { useUser } from "../hooks/useUser";
 
-type SignupData = {
-  email?: string;
-  mobile?: string;
+type AuthAttempt = {
+  mode: AuthMode;
+  mobile: string;
+  id: string;
+  devOneTimeCode: string;
 };
 
 export type SignupContextType = {
-  signupData: SignupData | null;
-  registerAttempt: (mobile: string) => Promise<string>;
-  registerConfirm: () => Promise<void>;
+  attempt: AuthAttempt | null;
+  startAttempt: (mode: AuthMode, mobile: string) => Promise<void>;
+  confirmAttempt: (oneTimeCode: string) => Promise<void>;
 };
 
 export const SignupContext = createContext<SignupContextType | undefined>(
@@ -19,29 +26,32 @@ export const SignupContext = createContext<SignupContextType | undefined>(
 export const SignupProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [signupData, setSignupData] = useState<SignupData | null>({
-    email: "",
-  });
+  const { signIn } = useUser();
+  const [attempt, setAttempt] = useState<AuthAttempt | null>(null);
 
-  const registerAttempt = async (mobile: string) => {
-    setSignupData((prev) => ({
-      email: prev?.email ?? "",
+  const startAttempt = async (mode: AuthMode, mobile: string) => {
+    const response = await startAuthAttempt(mode, mobile);
+    setAttempt({
+      mode,
       mobile,
-    }));
-
-    let response = await postRegisterAttempt(mobile);
-    // TODO: call register-attempt API and persist registerAttemptId on signupData
-    return response.data;
+      id: response.id,
+      devOneTimeCode: response.oneTimeCode,
+    });
   };
 
-  const registerConfirm = async () => {
-    // TODO: implement confirm API
+  const confirmAttempt = async (oneTimeCode: string) => {
+    if (!attempt) throw new Error("No sign-in in progress. Please start again.");
+    const session = await confirmAuthAttempt(
+      attempt.mode,
+      attempt.id,
+      Number(oneTimeCode)
+    );
+    await signIn(session);
+    setAttempt(null);
   };
 
   return (
-    <SignupContext.Provider
-      value={{ signupData, registerAttempt, registerConfirm }}
-    >
+    <SignupContext.Provider value={{ attempt, startAttempt, confirmAttempt }}>
       {children}
     </SignupContext.Provider>
   );

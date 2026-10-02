@@ -7,60 +7,69 @@ import {
 import React, { useState } from "react";
 import ThemedButton from "../../components/ThemedButton";
 import ThemedTextInput from "../../components/ThemedTextInput";
-import { useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import ThemedSafeView from "../../components/ThemedSafeView";
-import useRegisterAttempt from "../../hooks/useRegisterAttempt";
-import ThemedView from "../../components/ThemedView";
-import { useUser } from "../../hooks/useUser";
+import { useSignup } from "../../hooks/useSignup";
+import { AuthMode } from "../../services/auth-service";
+import { getErrorMessage } from "../../services/api-error";
+import { Colors } from "../../constants/Colors";
+
+const MAX_MOBILE_LENGTH = 20;
 
 const PhoneNumberPage = () => {
   const router = useRouter();
-  const { createRegisterAttempt } = useRegisterAttempt();
-
-  const [error, setError] = useState<Error | null>(null);
-
-  const { user } = useUser();
+  const params = useLocalSearchParams<{ mode?: string; mobile?: string }>();
+  const mode: AuthMode = params.mode === "create-user" ? "create-user" : "login";
+  const { startAttempt } = useSignup();
+  const [phoneNumber, setPhoneNumber] = useState(params.mobile ?? "");
+  const [error, setError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async () => {
+    const mobile = phoneNumber.trim();
+    if (!mobile) {
+      setError("Please enter your phone number");
+      return;
+    }
     setError(null);
+    setIsSubmitting(true);
     try {
-      const response = await createRegisterAttempt(phoneNumber);
-      console.log(response.data);
-      router.navigate({
-        pathname: "/confirmationCodePage",
-        params: { mobile: phoneNumber.trim() },
-      });
+      await startAttempt(mode, mobile);
+      router.navigate("/confirmationCodePage");
     } catch (error: unknown) {
-      if (error instanceof Error) {
-        setError(error);
-      } else {
-        setError(new Error("Unknown error"));
-      }
-      console.error("Unknown error from createRegisterAttempt:", error);
+      setError(getErrorMessage(error));
+      console.error("startAttempt failed:", error);
     } finally {
-      setphoneNumber("")
+      setIsSubmitting(false);
     }
   };
-
-  const [phoneNumber, setphoneNumber] = useState("");
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
       <ThemedSafeView>
+        <Text style={styles.title}>
+          {mode === "login" ? "Log in" : "Create your account"}
+        </Text>
         <ThemedTextInput
           placeholder="Enter your phone number"
-          style={{ width: "80%", marginBottom: 20 }}
+          accessibilityLabel="Phone number"
+          style={styles.input}
           value={phoneNumber}
           keyboardType="phone-pad"
-          onChangeText={setphoneNumber}
+          textContentType="telephoneNumber"
+          autoComplete="tel"
+          maxLength={MAX_MOBILE_LENGTH}
+          editable={!isSubmitting}
+          onChangeText={setPhoneNumber}
+          onSubmitEditing={handleSubmit}
         />
-        {/* <Spacer height="20%" style={{ flexShrink: 3 }} /> */}
-
-        <ThemedButton onPress={handleSubmit}>Next</ThemedButton>
+        <ThemedButton onPress={handleSubmit} disabled={isSubmitting}>
+          {isSubmitting ? "Sending code..." : "Next"}
+        </ThemedButton>
         {error ? (
-          <ThemedView>
-            <Text>{error.message}</Text>
-          </ThemedView>
+          <Text style={styles.error} accessibilityRole="alert">
+            {error}
+          </Text>
         ) : null}
       </ThemedSafeView>
     </TouchableWithoutFeedback>
@@ -69,4 +78,21 @@ const PhoneNumberPage = () => {
 
 export default PhoneNumberPage;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  title: {
+    fontWeight: "bold",
+    fontSize: 18,
+    color: Colors.title,
+    marginBottom: 20,
+  },
+  input: {
+    width: "80%",
+    marginBottom: 20,
+  },
+  error: {
+    color: Colors.warning,
+    marginTop: 16,
+    textAlign: "center",
+    width: "80%",
+  },
+});

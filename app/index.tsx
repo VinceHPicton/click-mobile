@@ -2,36 +2,36 @@ import { StyleSheet, Text } from "react-native";
 import React from "react";
 import { Colors } from "../constants/Colors";
 import Spacer from "../components/Spacer";
-import { useUser } from "../hooks/useUser";
 import ThemedButton from "../components/ThemedButton";
 import { useRouter } from "expo-router";
 import ThemedSafeView from "../components/ThemedSafeView";
+import { AuthMode } from "../services/auth-service";
 
-const Home = () => {
-  const { user } = useUser();
+const Welcome = () => {
   const router = useRouter();
 
-  console.log(user);
-
-  const handleClick = () => {
-    router.navigate("/phoneNumberPage");
+  const goToPhoneNumberPage = (mode: AuthMode) => {
+    router.navigate({ pathname: "/phoneNumberPage", params: { mode } });
   };
 
   return (
-    <ThemedSafeView style={[{ backgroundColor: Colors.welcomeBackground }]}>
-      <Spacer></Spacer>
+    <ThemedSafeView style={{ backgroundColor: Colors.welcomeBackground }}>
+      <Spacer />
       <Text style={[styles.title, styles.container]}>Welcome to click!</Text>
-
       <Spacer height="50%" style={{ flexShrink: 3 }} />
-
-      <ThemedButton onPress={handleClick}>
+      <ThemedButton onPress={() => goToPhoneNumberPage("login")}>
         Log in with phone number
       </ThemedButton>
+      <Spacer height={16} />
+      <ThemedButton onPress={() => goToPhoneNumberPage("create-user")}>
+        Create an account
+      </ThemedButton>
+      <Spacer />
     </ThemedSafeView>
   );
 };
 
-export default Home;
+export default Welcome;
 
 const styles = StyleSheet.create({
   container: {
@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   title: {
-    fontWeight: 'bold',
-    fontSize: 18
-  }
+    fontWeight: "bold",
+    fontSize: 18,
+  },
 });
